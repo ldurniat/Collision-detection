@@ -125,4 +125,35 @@ function M.rectVsRect(rect1, rect2)
     return false
 end
 
+-- Checks for collision between two display object rectangles that are not rotated.
+--
+-- @param `rect1`: The first display object rectangle, with properties:
+--                 `x`, `y` (position of the top-left corner),
+--                 `width`, `height` (dimensions of the rectangle).
+-- @param `rect2`: The second display object rectangle, with properties:
+--                 `x`, `y` (position of the top-left corner),
+--                 `width`, `height` (dimensions of the rectangle).
+--
+-- @return `true` if the rectangles collide, `false` otherwise.
+function M.rectVsRectNonRotated(rect1, rect2)
+    -- Get the edges of the first rectangle
+    local left1 = rect1.x
+    local right1 = rect1.x + rect1.width
+    local top1 = rect1.y
+    local bottom1 = rect1.y + rect1.height
+
+    -- Get the edges of the second rectangle
+    local left2 = rect2.x
+    local right2 = rect2.x + rect2.width
+    local top2 = rect2.y
+    local bottom2 = rect2.y + rect2.height
+
+    -- Check if the rectangles overlap on both axes (X and Y)
+    if left1 < right2 and right1 > left2 and top1 < bottom2 and bottom1 > top2 then
+        return true  -- The rectangles are colliding
+    else
+        return false -- The rectangles are not colliding
+    end
+end
+
 return M
