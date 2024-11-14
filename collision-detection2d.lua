@@ -22,24 +22,31 @@ local M = {}
 --                                 PRIVATE METHODS                                            --
 -- ------------------------------------------------------------------------------------------ --
 
--- Checks for collision between two display objects representing circles using the vector2d library.
+-- Checks for collision between two objects representing circles or objects with defined
+-- position and radius properties.
 --
--- @param `circle1`: The first display object with properties:
---                   `x` (x-coordinate of the center),
---                   `y` (y-coordinate of the center),
---                   `path.radius` (the radius of the circle).
--- @param `circle2`: The second display object with properties:
---                   `x` (x-coordinate of the center),
---                   `y` (y-coordinate of the center),
---                   `path.radius` (the radius of the circle).
+-- @param `obj1`: The first object with properties:
+--                `x` (x-coordinate of the center),
+--                `y` (y-coordinate of the center),
+--                `radius` (the radius of the circle).
+-- @param `obj2`: The second object with similar properties.
 --
 -- @return `true` if the circles collide, `false` otherwise.
-function M.circleVsCircle(circle1, circle2)
+function M.circleVsCircle(obj1, obj2)
+    -- Extract properties with a fallback to common paths
+    local x1, y1, r1 = obj1.x, obj1.y, obj1.radius or obj1.path and obj1.path.radius
+    local x2, y2, r2 = obj2.x, obj2.y, obj2.radius or obj2.path and obj2.path.radius
+
+    -- Ensure valid radius values
+    if not r1 or not r2 then
+        error("Both objects must have a defined radius.")
+    end
+
     -- Calculate the distance between the centers using vector2d's distance function
-    local distance = vector2d.distance(circle1, circle2)
+    local distance = vector2d.distance({x = x1, y = y1}, {x = x2, y = y2})
 
     -- Check if the distance is less than or equal to the sum of the radii
-    return distance <= (circle1.path.radius + circle2.path.radius)
+    return distance <= (r1 + r2)
 end
 
 -- Function to check collision between two display object rectangles
